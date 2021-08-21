@@ -17,6 +17,15 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '-c', '--config',
+    default='',
+    help="path to config file (default: "
+    "${XDG_CONFIG_HOME:-$HOME/.config}/speedyp/speedypy.conf or "
+    "./speedpy.conf)",
+)
+
+
+parser.add_argument(
     '-l', '--log-level',
     choices=['INFO', 'WARNING', 'ERROR', 'DEBUG'],
     default='INFO',
@@ -65,6 +74,7 @@ def parse_args(argv=None):
     for importer, modname, _ in pkgutil.iter_modules(subcommands.__path__):
         import_module('..subcommands.' + modname, __name__)
     args = parser.parse_args(argv)
+    args.config = parse_config(args.config)
     if not args.subcommand:
         parser.print_help()
         exit(0)
@@ -88,10 +98,7 @@ def parse_config(path):
                 'speedypy.conf',
             )
     config_parser.read(path)
-    attrs = ''.split()
-    for a in attrs:
-        if a not in config_parser['DEFAULT']:
-            log.error('Attribute undefined: ' + a)
+    attrs = 'exclude_servers'.split()
     Config = collections.namedtuple('Config', attrs)
     config = Config(
         *[config_parser['DEFAULT'].get(a) for a in attrs]

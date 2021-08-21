@@ -1,3 +1,5 @@
+import argparse
+
 from speedypy.args import subcommand, argument
 
 args = []
@@ -5,7 +7,8 @@ args = []
 
 args.append(argument(
     '-o', '--outfile',
-    default=None,
+    default='-',
+    type=argparse.FileType(mode='w'),
     help="path to an output file (default: stdout)",
 ))
 
