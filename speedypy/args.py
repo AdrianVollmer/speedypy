@@ -105,3 +105,24 @@ def parse_config(path):
     )
 
     return config
+
+
+def get_exclude_servers(args):
+    try:
+        exclude_servers = args.config.exclude_servers.split(',')
+    except AttributeError:
+        exclude_servers = None
+    return exclude_servers
+
+
+def get_file(name):
+    import os
+
+    import xdg.BaseDirectory
+
+    if name == 'logfile':
+        logfile_name = os.path.join(
+            xdg.BaseDirectory.save_data_path('speedypy'),
+            'speedtests.log',
+        )
+        return logfile_name

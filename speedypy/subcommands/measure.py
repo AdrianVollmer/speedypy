@@ -1,6 +1,7 @@
 import logging
 
-from speedypy.args import subcommand, argument
+from speedypy.args import subcommand, argument, get_exclude_servers, \
+    get_file
 
 args = []
 log = logging.getLogger(__name__)
@@ -19,10 +20,7 @@ args.append(argument(
 def measure(args):
     '''Measure speed and log result'''
     log.info("Running speedtest...")
-    try:
-        exclude_servers = args.config.exclude_servers.split(',')
-    except AttributeError:
-        exclude_servers = None
+    exclude_servers = get_exclude_servers(args)
     result = run_speedtest(exclude_servers=exclude_servers)
     if args.dont_store:
         print(result)
@@ -45,14 +43,7 @@ def run_speedtest(exclude_servers=[]):
 
 def store_result(result):
     import json
-    import os
-
-    import xdg.BaseDirectory
-
-    logfile_name = os.path.join(
-        xdg.BaseDirectory.save_data_path('speedypy'),
-        'speedtests.log',
-    )
+    logfile_name = get_file('logfile')
     log.info("Storing result to file: %s" % logfile_name)
     with open(logfile_name, 'a') as fp:
         json.dump(result, fp)
