@@ -19,7 +19,6 @@ args.append(argument(
 @subcommand(args)
 def measure(args):
     '''Measure speed and log result'''
-    log.info("Running speedtest...")
     exclude_servers = get_exclude_servers(args)
     result = run_speedtest(exclude_servers=exclude_servers)
     if args.dont_store:
@@ -31,6 +30,10 @@ def measure(args):
 def run_speedtest(exclude_servers=[]):
     # https://github.com/sivel/speedtest-cli/wiki
     import speedtest
+    log.info("Running speedtest...")
+    if exclude_servers:
+        log.info("Excluding servers with these IDs: %s" %
+                 ', '.join(exclude_servers))
 
     s = speedtest.Speedtest()
     s.get_servers(exclude=exclude_servers)
