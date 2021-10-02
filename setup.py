@@ -5,7 +5,6 @@ setuptools.setup(
     name='speedypy',
     version=__version__,
     author='Adrian Vollmer',
-    author_email='adrian.vollmer@arcor.de',
     url='https://github.com/AdrianVollmer/speedypy',
     description=__doc__,
     long_description=open('README.md', 'r').read(),
