@@ -1,7 +1,7 @@
 speedypy
 ========
 
-Measure and visualize you internet speed
+Measure and visualize your internet speed
 
 Installation
 ------------
