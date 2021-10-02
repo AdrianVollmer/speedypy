@@ -6,7 +6,7 @@ Measure and visualize your internet speed
 Installation
 ------------
 
-Make sure you have Python3 and pip instlaled, then run this:
+Make sure you have Python3 and pip installed, then run this:
 
 ```
 $ pip3 install --user git+https://github.com/AdrianVollmer/speedypy
