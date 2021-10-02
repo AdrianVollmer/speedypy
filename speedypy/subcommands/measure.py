@@ -50,3 +50,4 @@ def store_result(result):
     log.info("Storing result to file: %s" % logfile_name)
     with open(logfile_name, 'a') as fp:
         json.dump(result, fp)
+        fp.write('\n')

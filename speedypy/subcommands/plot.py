@@ -183,6 +183,8 @@ def get_data(exclude_servers):
     data = []
     with open(logfile_name, 'r') as f:
         for line in f.readlines():
+            if not line:
+                continue
             j = json.loads(line)
             if int(j['server']['id']) not in exclude_servers:
                 data.append(json.loads(line))
