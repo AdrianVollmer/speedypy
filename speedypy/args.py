@@ -20,8 +20,8 @@ parser.add_argument(
     '-c', '--config',
     default='',
     help="path to config file (default: "
-    "${XDG_CONFIG_HOME:-$HOME/.config}/speedyp/speedypy.conf or "
-    "./speedpy.conf)",
+    "${XDG_CONFIG_HOME:-$HOME/.config}/speedypy/speedypy.conf or "
+    "./speedypy.conf)",
 )
 
 
