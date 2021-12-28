@@ -13,3 +13,4 @@ args.append(argument(
 @subcommand(args)
 def analytics(args):
     '''Output interesting statistics'''
+    print("Not yet implemented")
