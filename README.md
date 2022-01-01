@@ -9,7 +9,7 @@ Installation
 Make sure you have Python3 and pip installed, then run this:
 
 ```
-$ pip3 install --user git+https://github.com/AdrianVollmer/speedypy
+$ python3 -m pip install --user git+https://github.com/AdrianVollmer/speedypy
 ```
 
 Usage
@@ -18,7 +18,7 @@ Usage
 Put this in your crontab with `crontab -e`:
 
 ```
-17 * * * * /home/username/.local/bin/speedypy --log-level ERROR measure
+17 * * * * /home/<USERNAME>/.local/bin/speedypy --log-level ERROR measure
 
 ```
 
@@ -32,6 +32,10 @@ Read the output of `speedypy -h` for more information.
 
 Config
 ------
+
+We adhere to the [XDG Base Directory
+Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html),
+so the configuration file is in `$HOME/.config/speedypy` by default.
 
 In `$HOME/.config/speedypy/speedypy.conf` you can exclude certain servers
 that consistenly yield outliers. It could look like this:
