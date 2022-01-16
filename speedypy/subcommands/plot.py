@@ -73,7 +73,7 @@ def time_series(args):
     from scipy.ndimage.filters import uniform_filter1d
 
     exclude_servers = get_exclude_servers(args)
-    time, download, upload, ping = get_data(exclude_servers)
+    time, download, upload, ping, providers = get_data(exclude_servers)
 
     # TODO use time window, not number of data points
     size = args.smoothing_window
@@ -92,6 +92,7 @@ def time_series(args):
     for label, values in lines.items():
         plt.plot(time, values, label=label)
     plt.legend()
+    plt.title("Bandwidth (%s)" % ', '.join(providers))
     plt.show()
 
 
@@ -135,7 +136,7 @@ def scatter(args):
     import numpy as np
 
     exclude_servers = get_exclude_servers(args)
-    data = get_data(exclude_servers)
+    data = get_data(exclude_servers)[:-1]
     data = dict(zip(['time', 'download', 'upload', 'ping'], data))
     time = data['time']
     time_ = []
@@ -195,5 +196,6 @@ def get_data(exclude_servers):
     download = np.array([d['download']/1024**2 for d in data])
     upload = np.array([d['upload']/1024**2 for d in data])
     ping = np.array([d['ping'] for d in data])
+    providers = list(set(x['client']['isp'] for x in data))
 
-    return time, download, upload, ping
+    return time, download, upload, ping, providers
