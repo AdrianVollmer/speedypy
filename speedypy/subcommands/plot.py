@@ -59,7 +59,7 @@ time_series_args.append(argument(
 
 time_series_args.append(argument(
     '-w', '--smoothing-window',
-    default=12,
+    default=None,
     type=int,
     help="size of the smoothing window in hours (default: %(default)s)",
 ))
@@ -71,16 +71,17 @@ def time_series(args):
 
     import matplotlib.pyplot as plt
     import matplotlib.patches as mpatches
-    from scipy.ndimage.filters import uniform_filter1d
+    from pandas import Series
 
     exclude_servers = get_exclude_servers(args)
     time, download, upload, ping, providers = get_data(exclude_servers)
 
-    # TODO use time window, not number of data points
-    size = args.smoothing_window
-    download = uniform_filter1d(download, size=size)
-    upload = uniform_filter1d(upload, size=size)
-    ping = uniform_filter1d(ping, size=size)
+    window_size = args.smoothing_window
+    if window_size:
+        download, upload, ping = [
+            Series(data=d, index=time).rolling('%ih' % window_size).mean()
+            for d in (download, upload, ping)
+        ]
 
     lines = {}
     if not args.hide_download:
@@ -104,7 +105,10 @@ def time_series(args):
         handles.append(red_patch)
 
     plt.legend(handles=handles)
-    plt.title("Bandwidth (%s)" % ', '.join(providers))
+    title = "Bandwidth (%s)" % ', '.join(providers)
+    if window_size:
+        title += ', %ih rolling average' % window_size
+    plt.title(title)
     plt.show()
 
 
