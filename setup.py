@@ -21,6 +21,7 @@ setuptools.setup(
         'speedtest-cli',
         'numpy',
         'matplotlib',
+        'pandas',
         'pyxdg',
     ],
     python_requires='>=3.5',
