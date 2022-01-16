@@ -3,6 +3,9 @@ speedypy
 
 Measure and visualize your internet speed
 
+![Speedypy Example](https://github.com/AdrianVollmer/speedypy/blob/master/doc/speedypy_example.png)
+
+
 Installation
 ------------
 
