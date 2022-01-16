@@ -70,6 +70,7 @@ def time_series(args):
     '''Plot data as a time series'''
 
     import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
     from scipy.ndimage.filters import uniform_filter1d
 
     exclude_servers = get_exclude_servers(args)
@@ -91,7 +92,18 @@ def time_series(args):
 
     for label, values in lines.items():
         plt.plot(time, values, label=label)
-    plt.legend()
+
+    gaps = find_gaps(time)
+    if gaps:
+        for g in gaps:
+            plt.axvspan(g[0], g[0] + g[1], alpha=0.2, color='red')
+
+        handles, labels = plt.gca().get_legend_handles_labels()
+        red_patch = mpatches.Patch(alpha=0.2, color='red',
+                                   label='Missing data')
+        handles.append(red_patch)
+
+    plt.legend(handles=handles)
     plt.title("Bandwidth (%s)" % ', '.join(providers))
     plt.show()
 
@@ -199,3 +211,14 @@ def get_data(exclude_servers):
     providers = list(set(x['client']['isp'] for x in data))
 
     return time, download, upload, ping, providers
+
+
+def find_gaps(time):
+    import statistics
+    distances = [(t, time[i+1] - t) for i, t in enumerate(time[:-1])]
+    second_list = [x[1].seconds for x in distances]
+    mean = statistics.mean(second_list)
+    stddev = statistics.stdev(second_list)
+
+    result = [x for x in distances if x[1].seconds > mean + 5*stddev]
+    return result
