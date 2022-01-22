@@ -1,7 +1,8 @@
 import argparse
 
+from speedypy.common import get_data
 from speedypy.args import subcommand, argument, get_exclude_servers, \
-    subparsers_map, get_file
+    subparsers_map
 
 args = []
 
@@ -71,30 +72,29 @@ def time_series(args):
 
     import matplotlib.pyplot as plt
     import matplotlib.patches as mpatches
-    from pandas import Series
 
     exclude_servers = get_exclude_servers(args)
-    time, download, upload, ping, providers = get_data(exclude_servers)
+    data = get_data(exclude_servers)
 
     window_size = args.smoothing_window
     if window_size:
-        download, upload, ping = [
-            Series(data=d, index=time).rolling('%ih' % window_size).mean()
-            for d in (download, upload, ping)
+        data['download'], data['upload'], data['ping'] = [
+            data['time'].rolling('%ih' % window_size).mean()
+            for d in (data['download'], data['upload'], data['ping'])
         ]
 
     lines = {}
     if not args.hide_download:
-        lines["Download [Mbit/s]"] = download
+        lines["Download [Mbit/s]"] = data['download']
     if not args.hide_upload:
-        lines["Upload [Mbit/s]"] = upload
+        lines["Upload [Mbit/s]"] = data['upload']
     if not args.hide_ping:
-        lines["Ping [ms]"] = ping
+        lines["Ping [ms]"] = data['ping']
 
     for label, values in lines.items():
-        plt.plot(time, values, label=label)
+        plt.plot(data.index, values, label=label)
 
-    gaps = find_gaps(time)
+    gaps = find_gaps(data.index)
     if gaps:
         for g in gaps:
             plt.axvspan(g[0], g[0] + g[1], alpha=0.2, color='red')
@@ -105,7 +105,7 @@ def time_series(args):
         handles.append(red_patch)
 
     plt.legend(handles=handles)
-    title = "Bandwidth (%s)" % ', '.join(providers)
+    title = "Bandwidth (%s)" % ', '.join(set(data['isp']))
     if window_size:
         title += ', %ih rolling average' % window_size
     plt.title(title)
@@ -153,8 +153,7 @@ def scatter(args):
 
     exclude_servers = get_exclude_servers(args)
     data = get_data(exclude_servers)[:-1]
-    data = dict(zip(['time', 'download', 'upload', 'ping'], data))
-    time = data['time']
+    time = data.index
     time_ = []
     for t in time:
         t = t.time()
@@ -187,34 +186,6 @@ def scatter(args):
     plt.legend()
     plt.xlabel('Time of day in hours')
     plt.show()
-
-
-def get_data(exclude_servers):
-    import json
-    import dateutil
-
-    import numpy as np
-
-    logfile_name = get_file('logfile')
-
-    data = []
-    with open(logfile_name, 'r') as f:
-        for line in f.readlines():
-            if not line:
-                continue
-            j = json.loads(line)
-            if int(j['server']['id']) not in exclude_servers:
-                data.append(json.loads(line))
-
-    f = dateutil.parser.isoparse
-    time = np.array([f(d['timestamp']) for d in data])
-
-    download = np.array([d['download']/1024**2 for d in data])
-    upload = np.array([d['upload']/1024**2 for d in data])
-    ping = np.array([d['ping'] for d in data])
-    providers = list(set(x['client']['isp'] for x in data))
-
-    return time, download, upload, ping, providers
 
 
 def find_gaps(time):
