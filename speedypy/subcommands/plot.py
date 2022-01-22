@@ -147,9 +147,9 @@ scatter_args.append(argument(
 def scatter(args):
     '''Visualize the speed results as a scatter plot'''
     import collections
+    import statistics
 
     import matplotlib.pyplot as plt
-    import numpy as np
 
     exclude_servers = get_exclude_servers(args)
     data = get_data(exclude_servers)[:-1]
@@ -174,8 +174,8 @@ def scatter(args):
         mean = collections.defaultdict(list)
         stddev = collections.defaultdict(list)
         for k, v in bins.items():
-            mean[k + 0.5] = np.mean(v)
-            stddev[k + 0.5] = np.std(v)
+            mean[k + 0.5] = statistics.mean(v)
+            stddev[k + 0.5] = statistics.stdev(v)
 
         plt.errorbar(mean.keys(), mean.values(), yerr=stddev.values(),
                      marker='o', linestyle="", label='Average [%s]' % unit,
