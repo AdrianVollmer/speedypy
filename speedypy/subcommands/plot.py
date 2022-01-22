@@ -79,7 +79,7 @@ def time_series(args):
     window_size = args.smoothing_window
     if window_size:
         data['download'], data['upload'], data['ping'] = [
-            data['time'].rolling('%ih' % window_size).mean()
+            d.rolling('%ih' % window_size).mean()
             for d in (data['download'], data['upload'], data['ping'])
         ]
 
