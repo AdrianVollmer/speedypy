@@ -75,6 +75,7 @@ def time_series(args):
 
     exclude_servers = get_exclude_servers(args)
     data = get_data(exclude_servers)
+    gaps = find_gaps(data.index)
 
     window_size = args.smoothing_window
     if window_size:
@@ -94,7 +95,6 @@ def time_series(args):
     for label, values in lines.items():
         plt.plot(data.index, values, label=label)
 
-    gaps = find_gaps(data.index)
     if gaps:
         for g in gaps:
             plt.axvspan(g[0], g[0] + g[1], alpha=0.2, color='red')
