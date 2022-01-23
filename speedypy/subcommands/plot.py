@@ -153,6 +153,8 @@ def scatter(args):
 
     exclude_servers = get_exclude_servers(args)
     data = get_data(exclude_servers)[:-1]
+
+    # Cut off day from timestamps, only keep the hour and minute
     time = data.index
     time_ = []
     for t in time:
@@ -160,6 +162,7 @@ def scatter(args):
         t = t.hour + t.minute/60
         time_.append(t)
     time = time_
+
     quantity = data[args.quantity]
     if args.quantity == 'ping':
         unit = 'ms'
@@ -184,6 +187,11 @@ def scatter(args):
     if not args.hide_data:
         plt.scatter(time, quantity, label='Data [%s]' % unit)
     plt.legend()
+    title = "%s on an average day (%s)" % (
+        args.quantity,
+        ', '.join(set(data['isp'])),
+    )
+    plt.title(title)
     plt.xlabel('Time of day in hours')
     plt.show()
 
