@@ -76,9 +76,12 @@ def time_series(args):
     exclude_servers = get_exclude_servers(args)
     data = get_data(exclude_servers)
     gaps = find_gaps(data.index)
+    isps = set(data['isp'])
 
     window_size = args.smoothing_window
     if window_size:
+        #  data = data.resample('%ih' % window_size).mean()
+
         data['download'], data['upload'], data['ping'] = [
             d.rolling('%ih' % window_size).mean()
             for d in (data['download'], data['upload'], data['ping'])
@@ -105,7 +108,7 @@ def time_series(args):
         handles.append(red_patch)
 
     plt.legend(handles=handles)
-    title = "Bandwidth (%s)" % ', '.join(set(data['isp']))
+    title = "Bandwidth (%s)" % ', '.join(isps)
     if window_size:
         title += ', %ih rolling average' % window_size
     plt.title(title)
