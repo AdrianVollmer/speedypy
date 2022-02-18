@@ -68,7 +68,7 @@ hardware or a poor wifi signal. Best results are achieved when running this
 on a computer that is connected via ethernet cable directly to the modem or
 router of your internet service provider.
 
-Of course, this tool may detect anomalies that occur in-between
+Of course, this tool may not detect anomalies that occur in-between
 measurements, such as a complete outage of the connection with a duration of
 half an hour or less.
 
