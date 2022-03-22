@@ -111,7 +111,7 @@ def get_exclude_servers(args):
     try:
         exclude_servers = args.config.exclude_servers.split(',')
     except AttributeError:
-        exclude_servers = None
+        exclude_servers = []
     return exclude_servers
 
 
