@@ -10,7 +10,7 @@ args = []
 args.append(argument(
     '-o', '--outfile',
     default='-',
-    type=argparse.FileType(mode='w'),
+    type=argparse.FileType(mode='wb'),
     help="path to an output file (default: stdout)",
 ))
 
@@ -114,7 +114,11 @@ def time_series(args):
     if window_size:
         title += ', %ih rolling average' % window_size
     plt.title(title)
-    plt.show()
+
+    if args.outfile:
+        plt.savefig(args.outfile)
+    else:
+        plt.show()
 
 
 scatter_args = []
@@ -198,7 +202,11 @@ def scatter(args):
     )
     plt.title(title)
     plt.xlabel('Time of day in hours')
-    plt.show()
+
+    if args.outfile:
+        plt.savefig(args.outfile)
+    else:
+        plt.show()
 
 
 def find_gaps(time):
