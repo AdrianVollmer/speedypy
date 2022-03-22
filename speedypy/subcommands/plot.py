@@ -9,9 +9,9 @@ args = []
 
 args.append(argument(
     '-o', '--outfile',
-    default='-',
+    default=None,
     type=argparse.FileType(mode='wb'),
-    help="path to an output file (default: stdout)",
+    help="path to an output file (default: open an X window)",
 ))
 
 
