@@ -106,6 +106,8 @@ def time_series(args):
         red_patch = mpatches.Patch(alpha=0.2, color='red',
                                    label='Missing data')
         handles.append(red_patch)
+    else:
+        handles = None
 
     plt.legend(handles=handles)
     title = "Bandwidth (%s)" % ', '.join(isps)
