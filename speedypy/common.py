@@ -12,11 +12,18 @@ def get_data(exclude_servers=[]):
     data = []
     with open(logfile_name, 'r') as f:
         for line in f.readlines():
-            if not line:
+            if not line.strip():
                 continue
             j = json.loads(line)
-            if int(j['server']['id']) not in exclude_servers:
-                data.append(json.loads(line))
+            try:
+                if int(j['server']['id']) not in exclude_servers:
+                    data.append(j)
+            except Exception:
+                print("Error while parsing line: %s" % line)
+
+    if not data:
+        print("No data available")
+        exit(1)
 
     f = dateutil.parser.isoparse
     time = ([f(d['timestamp']) for d in data])
