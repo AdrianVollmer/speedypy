@@ -15,6 +15,8 @@ def get_data(exclude_servers=[]):
             if not line.strip():
                 continue
             j = json.loads(line)
+            if not j:
+                continue
             try:
                 if int(j['server']['id']) not in exclude_servers:
                     data.append(j)
